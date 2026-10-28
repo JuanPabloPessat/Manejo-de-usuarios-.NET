@@ -1,0 +1,64 @@
+@baseUrl = http://localhost:5202
+@token = replace-with-token-from-login
+@userId = replace-with-user-id
+
+### Public: list users
+GET {{baseUrl}}/api/users
+Accept: application/json
+
+### Public: get one user
+GET {{baseUrl}}/api/users/{{userId}}
+Accept: application/json
+
+### Public: login as IT (seeded development user)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "it.admin",
+  "password": "ChangeMe123!"
+}
+
+### Restricted: create user (requires IT or RRHH token)
+POST {{baseUrl}}/api/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "username": "new.user",
+  "fullName": "Nuevo Usuario",
+  "email": "new.user@example.com",
+  "department": "RRHH",
+  "role": "RRHH",
+  "password": "ChangeMe123!"
+}
+
+### Restricted: update user
+PUT {{baseUrl}}/api/users/{{userId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "fullName": "Usuario Actualizado",
+  "email": "updated.user@example.com",
+  "department": "IT",
+  "role": "IT",
+  "isActive": true
+}
+
+### Restricted: delete user
+DELETE {{baseUrl}}/api/users/{{userId}}
+Authorization: Bearer {{token}}
+
+### Expected 401: no token for a write operation
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+
+{
+  "username": "blocked.user",
+  "fullName": "Blocked User",
+  "email": "blocked@example.com",
+  "department": "IT",
+  "role": "IT",
+  "password": "ChangeMe123!"
+}
