@@ -15,8 +15,17 @@ public sealed class InMemoryUserService : IUserService
         AddSeedUser("rrhh.admin", "Administrador RRHH", "rrhh.admin@example.com", "RRHH", "RRHH", "ChangeMe123!");
     }
 
-    public IReadOnlyList<UserResponse> GetAll() =>
-        users.Values.Select(ToResponse).OrderBy(user => user.Username).ToList();
+    public IReadOnlyList<UserResponse> GetAll(int page, int pageSize, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        return users.Values
+            .OrderBy(user => user.Username)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(ToResponse)
+            .ToList();
+    }
 
     public UserResponse? GetById(Guid id) =>
         users.TryGetValue(id, out var user) ? ToResponse(user) : null;

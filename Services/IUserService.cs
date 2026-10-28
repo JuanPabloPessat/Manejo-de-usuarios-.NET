@@ -4,7 +4,7 @@ namespace UserManagmentAPI.Services;
 
 public interface IUserService
 {
-    IReadOnlyList<UserResponse> GetAll();
+    IReadOnlyList<UserResponse> GetAll(int page, int pageSize, CancellationToken cancellationToken);
     UserResponse? GetById(Guid id);
     UserResponse Create(CreateUserRequest request);
     UserResponse? Update(Guid id, UpdateUserRequest request);
